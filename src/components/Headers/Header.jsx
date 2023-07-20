@@ -3,20 +3,22 @@ import React, { useState } from "react";
 import { Input } from "antd";
 const { Search } = Input;
 
-const Header = ({setTodoName}) => {
-  const addTodo = (v) => {
-    setTodoName(v);
-  };
-
+const Header = ({ addTodos }) => {
+  const [inp, setInp] = useState("");
   return (
     <div className="header-main">
       <div className="search-bar-container">
         <Search
           placeholder="Add Todo Name"
+          value={inp}
           allowClear
           enterButton="Add"
           size="large"
-          onSearch={addTodo}
+          onChange={(e) => setInp(e.target.value)}
+          onSearch={(v) => {
+            addTodos(v);
+            setInp("");
+          }}
         />
       </div>
     </div>

@@ -3,3 +3,7 @@
  margin: auto;
  padding-top: 50px;
 }
+
+.todo-name-link{
+    font-size: medium;
+}
