@@ -3,8 +3,15 @@ import { Button, Modal } from "antd";
 import { Space, Select } from "antd";
 import { Input } from "antd";
 import "./EditModal.css";
+import { saveDataToLocalStorage } from "../../commons/LocalStorageHanlder";
 
-const App = ({ isModalOpen, setIsModalOpen, setTodos, todos, editTodo }) => {
+const App = ({
+  isModalOpen,
+  setIsModalOpen,
+  todos,
+  editTodo,
+  setTodosTemp,
+}) => {
   const [tName, setTname] = useState("");
   const [status, setStatus] = useState("");
   const handleOk = () => {
@@ -18,9 +25,10 @@ const App = ({ isModalOpen, setIsModalOpen, setTodos, todos, editTodo }) => {
       }
       return o;
     });
-    setTodos(temp);
+    setTodosTemp(temp);
     setTname("");
     setIsModalOpen(false);
+    saveDataToLocalStorage("todos", temp);
   };
 
   const handleCancel = () => {

@@ -1,15 +1,35 @@
 import "./Table.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Space, Table, Tag, Select, message, Popconfirm } from "antd";
 import { Button } from "antd";
 import EditModal from "../Modals/EditModal";
 import { Input } from "antd";
+import {
+  getDataFromLocalStorage,
+  saveDataToLocalStorage,
+} from "../../commons/LocalStorageHanlder";
 const { Search } = Input;
 
-const TableList = ({ todos, setTodos }) => {
+const TableList = ({ todos, setTodos, success }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editTodo, setEditTodo] = useState(todos[0]);
-  const [todosTemp, setTodosTemp] = useState(todos);
+  const [todosTemp, setTodosTemp] = useState();
+
+  useEffect(() => {
+    let temp = getDataFromLocalStorage("todos");
+    if (temp) {
+      setTodosTemp(temp);
+    } else {
+      setTodosTemp(todos);
+    }
+  }, [todos]);
+
+  useEffect(() => {
+    let temp = getDataFromLocalStorage("todos");
+    if (temp) {
+      setTodosTemp(temp);
+    }
+  }, []);
 
   const handleChangeStatus = (v, todo) => {
     let temp = [...todosTemp];
@@ -20,12 +40,15 @@ const TableList = ({ todos, setTodos }) => {
       return o;
     });
     setTodosTemp(temp);
+    saveDataToLocalStorage("todos", temp);
   };
 
   const handleDelete = (t) => {
     let temp = [...todosTemp];
     temp = temp.filter((o) => o.key !== t.key);
     setTodosTemp(temp);
+    success("Todo deleted successfully");
+    saveDataToLocalStorage("todos", temp);
   };
 
   const columns = [
@@ -192,10 +215,10 @@ const TableList = ({ todos, setTodos }) => {
       <Table columns={columns} dataSource={todosTemp} width={500} />
       <EditModal
         editTodo={editTodo}
-        todos={todos}
+        todos={todosTemp}
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
-        setTodos={setTodos}
+        setTodosTemp={setTodosTemp}
       />
     </div>
   );
