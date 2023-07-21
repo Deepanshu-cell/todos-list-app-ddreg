@@ -9,23 +9,23 @@ const { Search } = Input;
 const TableList = ({ todos, setTodos }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editTodo, setEditTodo] = useState(todos[0]);
-  const [searchValue, setSearchValue] = useState("");
+  const [todosTemp, setTodosTemp] = useState(todos);
 
   const handleChangeStatus = (v, todo) => {
-    let temp = [...todos];
+    let temp = [...todosTemp];
     temp = temp.map((o) => {
       if (o.key === todo.key) {
         o.tags = [v];
       }
       return o;
     });
-    setTodos(temp);
+    setTodosTemp(temp);
   };
 
   const handleDelete = (t) => {
-    let temp = [...todos];
+    let temp = [...todosTemp];
     temp = temp.filter((o) => o.key !== t.key);
-    setTodos(temp);
+    setTodosTemp(temp);
   };
 
   const columns = [
@@ -129,30 +129,67 @@ const TableList = ({ todos, setTodos }) => {
 
   return (
     <div className="table-main">
-      <Space
-        style={{
-          marginBottom: 16,
-        }}
-      >
-        <Search
-          placeholder="Search Todo Name"
-          allowClear
-          size="large"
-          onChange={(e) => {
-            let v = e.target.value;
-            if (v === "") {
-              setTodos(todos);
-            } else {
-              let temp = [...todos];
-              temp = temp.filter((o) => o.name.includes(v));
-              console.log(temp);
-              setTodos(temp);
-            }
-          }}
-          set
-        />
-      </Space>
-      <Table columns={columns} dataSource={todos} width={500} />
+      <div className="select--search-container">
+        <Space style={{}}>
+          <Search
+            placeholder="Search Todo Name"
+            allowClear
+            size="large"
+            onChange={(e) => {
+              let v = e.target.value;
+              if (v === "") {
+                setTodosTemp(todos);
+              } else {
+                let temp = [...todos];
+                temp = temp.filter((o) =>
+                  o.name.toLowerCase().includes(v.toLowerCase())
+                );
+                console.log(temp);
+                setTodosTemp(temp);
+              }
+            }}
+            set
+          />
+        </Space>
+        <div className="select-container">
+          <Space size="large" wrap>
+            <Select
+              defaultValue={"filter status"}
+              style={{
+                width: 120,
+              }}
+              onChange={(v) => {
+                let temp = [...todos];
+                if (v === "all todos") {
+                  setTodosTemp(temp);
+                  return;
+                }
+                temp = temp.filter((o) => o.tags[0] === v);
+                setTodosTemp(temp);
+              }}
+              options={[
+                {
+                  value: "complete",
+                  label: "complete",
+                },
+                {
+                  value: "incomplete",
+                  label: "incomplete",
+                },
+                {
+                  value: "overdue",
+                  label: "Overdue",
+                },
+                {
+                  value: "all todos",
+                  label: "all todos",
+                },
+              ]}
+            />
+          </Space>
+        </div>
+      </div>
+      <Table columns={columns} dataSource={todosTemp} width={500} />
       <EditModal
         editTodo={editTodo}
         todos={todos}

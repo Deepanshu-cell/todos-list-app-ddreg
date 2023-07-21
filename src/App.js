@@ -10,7 +10,7 @@ function App() {
   const addTodos = (tName) => {
     let temp = [...todos];
     let obj = {
-      key: todos.length + 1,
+      key: todos.length + 2,
       name: tName,
       tags: ["incomplete"],
     }

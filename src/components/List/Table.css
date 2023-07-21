@@ -7,3 +7,14 @@
 .todo-name-link{
     font-size: medium;
 }
+
+.select--search-container{
+    margin-bottom: 35px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+}
+
+.select-container{
+    margin-left: 30px;
+}
